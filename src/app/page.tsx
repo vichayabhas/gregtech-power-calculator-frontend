@@ -191,7 +191,7 @@ export default function Home() {
                                   (powerPoint, l) => {
                                     if (l == powerTableElement) {
                                       return {
-                                        power: powerPoint.power + add / 2,
+                                        power: powerPoint.power + add,
                                         name: powerPoint.name,
                                         voltNameIndex: powerPoint.voltNameIndex,
                                         types: "PowerPoint",
