@@ -1,4 +1,3 @@
-import mongoose from "mongoose";
 import React from "react";
 
 export function calculate(
@@ -35,9 +34,6 @@ export function sendNotification(body: string) {
   });
 }
 
-export function stringToId(input: string) {
-  return new mongoose.Types.ObjectId(input);
-}
 export function removeElementInUseStateArray<T>(input: T[]) {
   return input.filter((e, i, a) => i < a.length - 1);
 }
