@@ -360,3 +360,11 @@ export interface Location2Dimention {
   i: number;
   j: number;
 }
+export function isFullAmp(
+  isTransformer: boolean,
+  input: number,
+  voltIndex: number
+) {
+  const divider = 8 * 4 ** (voltIndex + (isTransformer ? 1 : 0));
+  return Number.isInteger(input / divider);
+}

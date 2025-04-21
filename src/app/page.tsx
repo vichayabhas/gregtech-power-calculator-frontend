@@ -2,6 +2,7 @@
 import FinishButton from "@/components/utility/FinishButton";
 import {
   Data,
+  isFullAmp,
   Location2Dimention,
   NameVoltPack,
   PowerPoint,
@@ -9,7 +10,7 @@ import {
   setTextToString,
   volts,
 } from "@/components/utility/setup";
-import { MenuItem, Select, TextField } from "@mui/material";
+import { Checkbox, MenuItem, Select, TextField } from "@mui/material";
 import React from "react";
 
 function editPower(
@@ -118,6 +119,7 @@ export default function Home() {
           <th>volt</th>
           <th>power</th>
           <th>used</th>
+          <th>transformValid</th>
         </tr>
         {data.nameVoltPacks.map((nameVoltPack, i) => {
           return (
@@ -126,6 +128,16 @@ export default function Home() {
               <td>{volts[nameVoltPack.voltIndex]}</td>
               <td>{nameVoltPack.power}</td>
               <td>{nameVoltPack.powerPointIndexs.length}</td>
+              <td>
+                <Checkbox
+                  readOnly
+                  checked={isFullAmp(
+                    true,
+                    nameVoltPack.power,
+                    nameVoltPack.voltIndex
+                  )}
+                />
+              </td>
             </tr>
           );
         })}
@@ -175,6 +187,20 @@ export default function Home() {
                                   data.powerPoints[powerTableElement].power
                                 ].voltIndex
                               ]
+                        }${
+                          data.powerPoints[powerTableElement].types ==
+                          "Transformer"
+                            ? ""
+                            : isFullAmp(
+                                false,
+                                data.powerPoints[powerTableElement].power,
+                                data.nameVoltPacks[
+                                  data.powerPoints[powerTableElement]
+                                    .voltNameIndex
+                                ].voltIndex
+                              )
+                            ? " valid"
+                            : " invalid"
                         }`
                       : null}
                     {location.i == i &&
@@ -187,7 +213,6 @@ export default function Home() {
                         onChange={setTextToInt((typeping) => {
                           setPower((previous) => {
                             const add = typeping - previous;
-
                             setData((previousData) => {
                               const newPowerPoints =
                                 previousData.powerPoints.map<PowerPoint>(
