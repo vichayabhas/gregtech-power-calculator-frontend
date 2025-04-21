@@ -18,8 +18,6 @@ function editPower(
   powerPointIndex: number,
   add: number
 ): Data {
-  console.log(powerPointIndex);
-  console.log(powerPoints);
   const nameVoltPack =
     nameVoltPacks[powerPoints[powerPointIndex].voltNameIndex];
   if (nameVoltPack.source == null) {
@@ -41,23 +39,6 @@ function editPower(
       }),
     };
   } else {
-    // return {
-    //   powerTable,
-    //   powerPoints,
-    //   nameVoltPacks: nameVoltPacks.map<NameVoltPack>((n, i) => {
-    //     if (i == powerPoints[powerPointIndex].voltNameIndex) {
-    //       return {
-    //         name: n.name,
-    //         volt: n.volt,
-    //         power: n.power + add,
-    //         powerPointIndexs: n.powerPointIndexs,
-    //         source: n.source,
-    //       };
-    //     } else {
-    //       return n;
-    //     }
-    //   }),
-    // };
     return editPower(
       {
         powerTable,
@@ -346,7 +327,6 @@ export default function Home() {
                                     powerTable,
                                     nameVoltPacks,
                                   }) => {
-                                    console.log(power, voltNameIndex);
                                     const newPowerTable = powerTable.map(
                                       (powerTableRow, i2) => {
                                         if (i == i2) {
@@ -409,7 +389,6 @@ export default function Home() {
                                         powerTable: newPowerTable,
                                       };
                                     } else {
-                                      console.log(voltNameIndex);
                                       return editPower(
                                         {
                                           nameVoltPacks: newNameVoltPacks,
@@ -435,7 +414,6 @@ export default function Home() {
           );
         })}
       </table>
-      <FinishButton text="log" onClick={() => console.log(data)} />
       <TextField
         value={JSON.stringify(data)}
         onChange={setTextToString((input) => {
