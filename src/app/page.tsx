@@ -206,18 +206,39 @@ export default function Home() {
                                   newPowerPoints[powerTableElement]
                                     .voltNameIndex
                                 ].source;
+                              const newNameVoltPacks =
+                                previousData.nameVoltPacks.map<NameVoltPack>(
+                                  (nameVoltPack, l) => {
+                                    if (
+                                      l ==
+                                      newPowerPoints[powerTableElement]
+                                        .voltNameIndex
+                                    ) {
+                                      return {
+                                        power: nameVoltPack.power + add,
+                                        volt: nameVoltPack.volt,
+                                        name: nameVoltPack.name,
+                                        source: nameVoltPack.source,
+                                        powerPointIndexs:
+                                          nameVoltPack.powerPointIndexs,
+                                      };
+                                    } else {
+                                      return nameVoltPack;
+                                    }
+                                  }
+                                );
                               if (source == null) {
                                 return {
                                   powerPoints: newPowerPoints,
                                   powerTable: previousData.powerTable,
-                                  nameVoltPacks: previousData.nameVoltPacks,
+                                  nameVoltPacks: newNameVoltPacks,
                                 };
                               } else {
                                 return editPower(
                                   {
                                     powerPoints: newPowerPoints,
                                     powerTable: previousData.powerTable,
-                                    nameVoltPacks: previousData.nameVoltPacks,
+                                    nameVoltPacks: newNameVoltPacks,
                                   },
                                   source,
                                   add
