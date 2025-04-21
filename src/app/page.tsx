@@ -7,7 +7,6 @@ import {
   PowerPoint,
   setTextToInt,
   setTextToString,
-  Volt,
   volts,
 } from "@/components/utility/setup";
 import { MenuItem, Select, TextField } from "@mui/material";
@@ -28,7 +27,7 @@ function editPower(
         if (i == powerPoints[powerPointIndex].voltNameIndex) {
           return {
             name: n.name,
-            volt: n.volt,
+            voltIndex: n.voltIndex,
             power: n.power + add,
             powerPointIndexs: n.powerPointIndexs,
             source: n.source,
@@ -47,7 +46,7 @@ function editPower(
           if (i == powerPoints[powerPointIndex].voltNameIndex) {
             return {
               name: n.name,
-              volt: n.volt,
+              voltIndex: n.voltIndex,
               power: n.power + add,
               powerPointIndexs: n.powerPointIndexs,
               source: n.source,
@@ -68,7 +67,7 @@ export default function Home() {
     powerPoints: [],
     powerTable: [[null]],
   });
-  const [volt, setVolt] = React.useState<Volt>("LV");
+  const [voltIndex, setVoltIndex] = React.useState(1);
   const [name, setName] = React.useState("");
   const [location, setLocation] = React.useState<Location2Dimention>({
     i: 0,
@@ -82,7 +81,7 @@ export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <Select
-        value={volt}
+        value={voltIndex}
         variant="standard"
         name="location"
         id="location"
@@ -90,10 +89,10 @@ export default function Home() {
         sx={{
           color: "black",
         }}
-        renderValue={() => volt}
+        renderValue={() => volts[voltIndex]}
       >
         {volts.map((v, i) => (
-          <MenuItem onClick={() => setVolt(v)} key={i}>
+          <MenuItem onClick={() => setVoltIndex(i)} key={i}>
             {v}
           </MenuItem>
         ))}
@@ -108,7 +107,7 @@ export default function Home() {
             powerTable,
             nameVoltPacks: [
               ...nameVoltPacks,
-              { volt, name, power: 0, powerPointIndexs: [], source: null },
+              { voltIndex, name, power: 0, powerPointIndexs: [], source: null },
             ],
           }));
         }}
@@ -124,7 +123,7 @@ export default function Home() {
           return (
             <tr key={i}>
               <td>{nameVoltPack.name}</td>
-              <td>{nameVoltPack.volt}</td>
+              <td>{volts[nameVoltPack.voltIndex]}</td>
               <td>{nameVoltPack.power}</td>
               <td>{nameVoltPack.powerPointIndexs.length}</td>
             </tr>
@@ -162,16 +161,20 @@ export default function Home() {
                       ? `${data.powerPoints[powerTableElement].types} ${
                           data.powerPoints[powerTableElement].name
                         } ${
-                          data.nameVoltPacks[
-                            data.powerPoints[powerTableElement].voltNameIndex
-                          ].volt
+                          volts[
+                            data.nameVoltPacks[
+                              data.powerPoints[powerTableElement].voltNameIndex
+                            ].voltIndex
+                          ]
                         } ${
                           data.powerPoints[powerTableElement].types ==
                           "PowerPoint"
                             ? data.powerPoints[powerTableElement].power
-                            : data.nameVoltPacks[
-                                data.powerPoints[powerTableElement].power
-                              ].volt
+                            : volts[
+                                data.nameVoltPacks[
+                                  data.powerPoints[powerTableElement].power
+                                ].voltIndex
+                              ]
                         }`
                       : null}
                     {location.i == i &&
@@ -216,7 +219,7 @@ export default function Home() {
                                     ) {
                                       return {
                                         power: nameVoltPack.power + add,
-                                        volt: nameVoltPack.volt,
+                                        voltIndex: nameVoltPack.voltIndex,
                                         name: nameVoltPack.name,
                                         source: nameVoltPack.source,
                                         powerPointIndexs:
@@ -272,7 +275,9 @@ export default function Home() {
                             <Select
                               value={voltNameIndex}
                               renderValue={(v) => {
-                                return `${data.nameVoltPacks[v].name} ${data.nameVoltPacks[v].volt}`;
+                                return `${data.nameVoltPacks[v].name} ${
+                                  volts[data.nameVoltPacks[v].voltIndex]
+                                }`;
                               }}
                             >
                               {data.nameVoltPacks.map((nameVoltPack, l) => {
@@ -283,7 +288,8 @@ export default function Home() {
                                       setVoltNameIndex(l);
                                     }}
                                   >
-                                    {nameVoltPack.name} {nameVoltPack.volt}
+                                    {nameVoltPack.name}{" "}
+                                    {volts[nameVoltPack.voltIndex]}
                                   </MenuItem>
                                 );
                               })}
@@ -315,7 +321,9 @@ export default function Home() {
                                 <Select
                                   value={power}
                                   renderValue={(v) => {
-                                    return `${data.nameVoltPacks[v].name} ${data.nameVoltPacks[v].volt}`;
+                                    return `${data.nameVoltPacks[v].name} ${
+                                      volts[data.nameVoltPacks[v].voltIndex]
+                                    }`;
                                   }}
                                 >
                                   {data.nameVoltPacks.map((nameVoltPack, l) => {
@@ -326,7 +334,8 @@ export default function Home() {
                                           setPower(l);
                                         }}
                                       >
-                                        {nameVoltPack.name} {nameVoltPack.volt}
+                                        {nameVoltPack.name}{" "}
+                                        {volts[nameVoltPack.voltIndex]}
                                       </MenuItem>
                                     );
                                   })}
@@ -377,7 +386,7 @@ export default function Home() {
                                           ) {
                                             return {
                                               source: powerPoints.length,
-                                              volt: n.volt,
+                                              voltIndex: n.voltIndex,
                                               powerPointIndexs:
                                                 n.powerPointIndexs,
                                               name: n.name,
@@ -386,7 +395,7 @@ export default function Home() {
                                           } else if (i2 == voltNameIndex) {
                                             return {
                                               source: n.source,
-                                              volt: n.volt,
+                                              voltIndex: n.voltIndex,
                                               powerPointIndexs:
                                                 n.powerPointIndexs,
                                               name: n.name,

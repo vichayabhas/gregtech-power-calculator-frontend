@@ -339,7 +339,7 @@ export const volts = [
 ] as const;
 export type Volt = (typeof volts)[number];
 export interface NameVoltPack {
-  volt: Volt;
+  voltIndex: number;
   name: string;
   powerPointIndexs: number[];
   power: number;
