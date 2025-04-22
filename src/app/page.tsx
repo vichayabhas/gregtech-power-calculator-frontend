@@ -66,7 +66,7 @@ function readPower(data: Data, sourceIndex: number) {
   let output = 0;
   const nameVoltPack = data.nameVoltPacks[sourceIndex];
   let i = 0;
-  console.log(nameVoltPack)
+  console.log(nameVoltPack);
   while (i < nameVoltPack.powerPointIndexs.length) {
     const powerPoint = data.powerPoints[nameVoltPack.powerPointIndexs[i++]];
     switch (powerPoint.types) {
@@ -161,7 +161,7 @@ export default function Home() {
                   )}
                   onClick={() => {
                     alert(readPower(data, i));
-                    console.log(readPower(data,i))
+                    console.log(readPower(data, i));
                   }}
                 />
               </td>
@@ -448,8 +448,10 @@ export default function Home() {
                                             return {
                                               source: n.source,
                                               voltIndex: n.voltIndex,
-                                              powerPointIndexs:
-                                                n.powerPointIndexs,
+                                              powerPointIndexs: [
+                                                ...n.powerPointIndexs,
+                                                powerPoints.length,
+                                              ],
                                               name: n.name,
                                               power: n.power + realPower,
                                             };
