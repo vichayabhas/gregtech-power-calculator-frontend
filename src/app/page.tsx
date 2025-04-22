@@ -17,13 +17,11 @@ function readPower(data: Data, sourceIndex: number) {
   let output = 0;
   const nameVoltPack = data.nameVoltPacks[sourceIndex];
   let i = 0;
-  console.log(nameVoltPack);
   while (i < nameVoltPack.powerPointIndexs.length) {
     const powerPoint = data.powerPoints[nameVoltPack.powerPointIndexs[i++]];
     switch (powerPoint.types) {
       case "PowerPoint": {
         output = output + powerPoint.power;
-        console.log(powerPoint.power);
         break;
       }
       case "Transformer": {
@@ -108,10 +106,6 @@ export default function Home() {
                     readPower(data, i),
                     nameVoltPack.voltIndex
                   )}
-                  onClick={() => {
-                    alert(readPower(data, i));
-                    console.log(readPower(data, i));
-                  }}
                 />
               </td>
             </tr>
