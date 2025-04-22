@@ -303,6 +303,7 @@ export default function Home() {
                             return typeping;
                           });
                         })}
+                      type='number'
                       />
                     ) : null}
                     {location.i != i || location.j != j ? (
