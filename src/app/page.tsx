@@ -66,6 +66,7 @@ function readPower(data: Data, sourceIndex: number) {
   let output = 0;
   const nameVoltPack = data.nameVoltPacks[sourceIndex];
   let i = 0;
+  console.log(nameVoltPack)
   while (i < nameVoltPack.powerPointIndexs.length) {
     const powerPoint = data.powerPoints[nameVoltPack.powerPointIndexs[i++]];
     switch (powerPoint.types) {
