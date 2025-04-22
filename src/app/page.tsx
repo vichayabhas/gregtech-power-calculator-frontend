@@ -160,6 +160,7 @@ export default function Home() {
                   )}
                   onClick={() => {
                     alert(readPower(data, i));
+                    console.log(readPower(data,i))
                   }}
                 />
               </td>
