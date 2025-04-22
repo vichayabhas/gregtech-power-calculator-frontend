@@ -62,6 +62,25 @@ function editPower(
     );
   }
 }
+function readPower(data: Data, sourceIndex: number) {
+  let output = 0;
+  const nameVoltPack = data.nameVoltPacks[sourceIndex];
+  let i = 0;
+  while (i < nameVoltPack.powerPointIndexs.length) {
+    const powerPoint = data.powerPoints[nameVoltPack.powerPointIndexs[i++]];
+    switch (powerPoint.types) {
+      case "PowerPoint": {
+        output = output + powerPoint.power;
+        break;
+      }
+      case "Transformer": {
+        output = output + readPower(data, powerPoint.power);
+        break;
+      }
+    }
+  }
+  return output;
+}
 export default function Home() {
   const [data, setData] = React.useState<Data>({
     nameVoltPacks: [],
@@ -118,6 +137,7 @@ export default function Home() {
           <th>name</th>
           <th>volt</th>
           <th>power</th>
+          <th>test</th>
           <th>used</th>
           <th>transformValid</th>
         </tr>
@@ -127,6 +147,7 @@ export default function Home() {
               <td>{nameVoltPack.name}</td>
               <td>{volts[nameVoltPack.voltIndex]}</td>
               <td>{nameVoltPack.power}</td>
+              <td>{readPower(data, i)}</td>
               <td>{nameVoltPack.powerPointIndexs.length}</td>
               <td>
                 <Checkbox
