@@ -71,6 +71,7 @@ function readPower(data: Data, sourceIndex: number) {
     switch (powerPoint.types) {
       case "PowerPoint": {
         output = output + powerPoint.power;
+        console.log(powerPoint.power)
         break;
       }
       case "Transformer": {
