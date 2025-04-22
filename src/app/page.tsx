@@ -71,7 +71,7 @@ function readPower(data: Data, sourceIndex: number) {
     switch (powerPoint.types) {
       case "PowerPoint": {
         output = output + powerPoint.power;
-        console.log(powerPoint.power)
+        console.log(powerPoint.power);
         break;
       }
       case "Transformer": {
@@ -158,6 +158,9 @@ export default function Home() {
                     nameVoltPack.power,
                     nameVoltPack.voltIndex
                   )}
+                  onClick={() => {
+                    alert(readPower(data, i));
+                  }}
                 />
               </td>
             </tr>
