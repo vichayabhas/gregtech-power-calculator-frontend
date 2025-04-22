@@ -342,7 +342,6 @@ export interface NameVoltPack {
   voltIndex: number;
   name: string;
   powerPointIndexs: number[];
-  power: number;
   source: number | null;
 }
 export interface PowerPoint {

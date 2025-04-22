@@ -13,55 +13,6 @@ import {
 import { Checkbox, MenuItem, Select, TextField } from "@mui/material";
 import React from "react";
 
-function editPower(
-  { powerPoints, powerTable, nameVoltPacks }: Data,
-  powerPointIndex: number,
-  add: number
-): Data {
-  const nameVoltPack =
-    nameVoltPacks[powerPoints[powerPointIndex].voltNameIndex];
-  if (nameVoltPack.source == null) {
-    return {
-      powerTable,
-      powerPoints,
-      nameVoltPacks: nameVoltPacks.map<NameVoltPack>((n, i) => {
-        if (i == powerPoints[powerPointIndex].voltNameIndex) {
-          return {
-            name: n.name,
-            voltIndex: n.voltIndex,
-            power: n.power + add,
-            powerPointIndexs: n.powerPointIndexs,
-            source: n.source,
-          };
-        } else {
-          return n;
-        }
-      }),
-    };
-  } else {
-    return editPower(
-      {
-        powerTable,
-        powerPoints,
-        nameVoltPacks: nameVoltPacks.map<NameVoltPack>((n, i) => {
-          if (i == powerPoints[powerPointIndex].voltNameIndex) {
-            return {
-              name: n.name,
-              voltIndex: n.voltIndex,
-              power: n.power + add,
-              powerPointIndexs: n.powerPointIndexs,
-              source: n.source,
-            };
-          } else {
-            return n;
-          }
-        }),
-      },
-      nameVoltPack.source,
-      add
-    );
-  }
-}
 function readPower(data: Data, sourceIndex: number) {
   let output = 0;
   const nameVoltPack = data.nameVoltPacks[sourceIndex];
@@ -139,7 +90,6 @@ export default function Home() {
           <th>name</th>
           <th>volt</th>
           <th>power</th>
-          <th>test</th>
           <th>used</th>
           <th>transformValid</th>
         </tr>
@@ -148,7 +98,6 @@ export default function Home() {
             <tr key={i}>
               <td>{nameVoltPack.name}</td>
               <td>{volts[nameVoltPack.voltIndex]}</td>
-              <td>{nameVoltPack.power}</td>
               <td>{readPower(data, i)}</td>
               <td>{nameVoltPack.powerPointIndexs.length}</td>
               <td>
@@ -156,7 +105,7 @@ export default function Home() {
                   readOnly
                   checked={isFullAmp(
                     true,
-                    nameVoltPack.power,
+                    readPower(data, i),
                     nameVoltPack.voltIndex
                   )}
                   onClick={() => {
@@ -256,54 +205,16 @@ export default function Home() {
                                     }
                                   }
                                 );
-                              const source =
-                                previousData.nameVoltPacks[
-                                  newPowerPoints[powerTableElement]
-                                    .voltNameIndex
-                                ].source;
-                              const newNameVoltPacks =
-                                previousData.nameVoltPacks.map<NameVoltPack>(
-                                  (nameVoltPack, l) => {
-                                    if (
-                                      l ==
-                                      newPowerPoints[powerTableElement]
-                                        .voltNameIndex
-                                    ) {
-                                      return {
-                                        power: nameVoltPack.power + add,
-                                        voltIndex: nameVoltPack.voltIndex,
-                                        name: nameVoltPack.name,
-                                        source: nameVoltPack.source,
-                                        powerPointIndexs:
-                                          nameVoltPack.powerPointIndexs,
-                                      };
-                                    } else {
-                                      return nameVoltPack;
-                                    }
-                                  }
-                                );
-                              if (source == null) {
-                                return {
-                                  powerPoints: newPowerPoints,
-                                  powerTable: previousData.powerTable,
-                                  nameVoltPacks: newNameVoltPacks,
-                                };
-                              } else {
-                                return editPower(
-                                  {
-                                    powerPoints: newPowerPoints,
-                                    powerTable: previousData.powerTable,
-                                    nameVoltPacks: newNameVoltPacks,
-                                  },
-                                  source,
-                                  add
-                                );
-                              }
+                              return {
+                                powerPoints: newPowerPoints,
+                                powerTable: previousData.powerTable,
+                                nameVoltPacks: previousData.nameVoltPacks,
+                              };
                             });
                             return typeping;
                           });
                         })}
-                      type='number'
+                        type="number"
                       />
                     ) : null}
                     {location.i != i || location.j != j ? (
@@ -425,10 +336,6 @@ export default function Home() {
                                         }
                                       }
                                     );
-                                    const realPower =
-                                      types == "PowerPoint"
-                                        ? power
-                                        : nameVoltPacks[power].power;
                                     const newNameVoltPacks =
                                       nameVoltPacks.map<NameVoltPack>(
                                         (n, i2) => {
@@ -443,7 +350,6 @@ export default function Home() {
                                               powerPointIndexs:
                                                 n.powerPointIndexs,
                                               name: n.name,
-                                              power: n.power,
                                             };
                                           } else if (i2 == voltNameIndex) {
                                             return {
@@ -454,7 +360,6 @@ export default function Home() {
                                                 powerPoints.length,
                                               ],
                                               name: n.name,
-                                              power: n.power + realPower,
                                             };
                                           } else {
                                             return n;
@@ -465,25 +370,11 @@ export default function Home() {
                                       ...powerPoints,
                                       { power, types, name, voltNameIndex },
                                     ];
-                                    const source =
-                                      newNameVoltPacks[voltNameIndex].source;
-                                    if (source == null) {
-                                      return {
-                                        nameVoltPacks: newNameVoltPacks,
-                                        powerPoints: newPowerPoints,
-                                        powerTable: newPowerTable,
-                                      };
-                                    } else {
-                                      return editPower(
-                                        {
-                                          nameVoltPacks: newNameVoltPacks,
-                                          powerPoints: newPowerPoints,
-                                          powerTable: newPowerTable,
-                                        },
-                                        source,
-                                        realPower
-                                      );
-                                    }
+                                    return {
+                                      nameVoltPacks: newNameVoltPacks,
+                                      powerPoints: newPowerPoints,
+                                      powerTable: newPowerTable,
+                                    };
                                   }
                                 );
                               }}
