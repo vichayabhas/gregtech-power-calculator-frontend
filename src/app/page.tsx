@@ -1,9 +1,12 @@
 "use client";
 import FinishButton from "@/components/utility/FinishButton";
 import {
+  addItemInUseStateArray,
   Data,
   isFullAmp,
   Location2Dimention,
+  modifyElementInUseStateArray,
+  modifyElementInUseStateArray2Dimension,
   NameVoltPack,
   PowerPoint,
   setTextToInt,
@@ -49,6 +52,7 @@ export default function Home() {
   const [types, setTypes] = React.useState<"PowerPoint" | "Transformer">(
     "PowerPoint"
   );
+  const [editIndex, setEditIndex] = React.useState(0);
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <Select
@@ -76,10 +80,12 @@ export default function Home() {
           setData(({ powerPoints, powerTable, nameVoltPacks }) => ({
             powerPoints,
             powerTable,
-            nameVoltPacks: [
-              ...nameVoltPacks,
-              { voltIndex, name, power: 0, powerPointIndexs: [], source: null },
-            ],
+            nameVoltPacks: addItemInUseStateArray<NameVoltPack>({
+              voltIndex,
+              name,
+              powerPointIndexs: [],
+              source: null,
+            })(nameVoltPacks),
           }));
         }}
       />
@@ -94,7 +100,31 @@ export default function Home() {
         {data.nameVoltPacks.map((nameVoltPack, i) => {
           return (
             <tr key={i}>
-              <td>{nameVoltPack.name}</td>
+              <td onClick={() => setEditIndex(i)}>
+                {i == editIndex ? (
+                  <TextField
+                    value={nameVoltPack.name}
+                    onChange={setTextToString((typing) => {
+                      setData(({ powerPoints, powerTable, nameVoltPacks }) => ({
+                        powerPoints,
+                        powerTable,
+                        nameVoltPacks:
+                          modifyElementInUseStateArray<NameVoltPack>(i)(
+                            {
+                              name: typing,
+                              voltIndex: nameVoltPack.voltIndex,
+                              powerPointIndexs: nameVoltPack.powerPointIndexs,
+                              source: nameVoltPack.source,
+                            },
+                            nameVoltPacks
+                          ),
+                      }));
+                    })}
+                  />
+                ) : (
+                  nameVoltPack.name
+                )}
+              </td>
               <td>{volts[nameVoltPack.voltIndex]}</td>
               <td>{readPower(data, i)}</td>
               <td>{nameVoltPack.powerPointIndexs.length}</td>
@@ -118,7 +148,9 @@ export default function Home() {
           setData(({ powerPoints, powerTable, nameVoltPacks }) => ({
             powerPoints,
             nameVoltPacks,
-            powerTable: powerTable.map((v) => [...v, null]),
+            powerTable: powerTable.map(
+              addItemInUseStateArray<number | null>(null)
+            ),
           }));
         }}
       />
@@ -128,7 +160,9 @@ export default function Home() {
           setData(({ powerPoints, powerTable, nameVoltPacks }) => ({
             powerPoints,
             nameVoltPacks,
-            powerTable: [...powerTable, powerTable[0].map(() => null)],
+            powerTable: addItemInUseStateArray<(number | null)[]>(
+              powerTable[0].map(() => null)
+            )(powerTable),
           }));
         }}
       />
@@ -179,33 +213,32 @@ export default function Home() {
                     data.powerPoints[powerTableElement].types !=
                       "Transformer" ? (
                       <TextField
-                        value={power.toString()}
-                        onChange={setTextToInt((typeping) => {
-                          setPower((previous) => {
-                            const add = typeping - previous;
-                            setData((previousData) => {
-                              const newPowerPoints =
-                                previousData.powerPoints.map<PowerPoint>(
-                                  (powerPoint, l) => {
-                                    if (l == powerTableElement) {
-                                      return {
-                                        power: powerPoint.power + add,
-                                        name: powerPoint.name,
-                                        voltNameIndex: powerPoint.voltNameIndex,
-                                        types: "PowerPoint",
-                                      };
-                                    } else {
-                                      return powerPoint;
-                                    }
-                                  }
-                                );
-                              return {
-                                powerPoints: newPowerPoints,
-                                powerTable: previousData.powerTable,
-                                nameVoltPacks: previousData.nameVoltPacks,
-                              };
-                            });
-                            return typeping;
+                        value={data.powerPoints[
+                          powerTableElement
+                        ].power.toString()}
+                        onChange={setTextToInt((typing) => {
+                          setData((previousData) => {
+                            const newPowerPoints =
+                              modifyElementInUseStateArray<PowerPoint>(
+                                powerTableElement
+                              )(
+                                {
+                                  power: typing,
+                                  name: previousData.powerPoints[
+                                    powerTableElement
+                                  ].name,
+                                  voltNameIndex:
+                                    previousData.powerPoints[powerTableElement]
+                                      .voltNameIndex,
+                                  types: "PowerPoint",
+                                },
+                                previousData.powerPoints
+                              );
+                            return {
+                              powerPoints: newPowerPoints,
+                              powerTable: previousData.powerTable,
+                              nameVoltPacks: previousData.nameVoltPacks,
+                            };
                           });
                         })}
                         type="number"
@@ -216,13 +249,6 @@ export default function Home() {
                         text="edit"
                         onClick={() => {
                           setLocation({ i, j });
-                          if (
-                            powerTableElement != null &&
-                            data.powerPoints[powerTableElement].types !=
-                              "Transformer"
-                          ) {
-                            setPower(data.powerPoints[powerTableElement].power);
-                          }
                         }}
                       />
                     ) : (
@@ -315,21 +341,10 @@ export default function Home() {
                                     powerTable,
                                     nameVoltPacks,
                                   }) => {
-                                    const newPowerTable = powerTable.map(
-                                      (powerTableRow, i2) => {
-                                        if (i == i2) {
-                                          return powerTableRow.map((v, j2) => {
-                                            if (j == j2) {
-                                              return powerPoints.length;
-                                            } else {
-                                              return v;
-                                            }
-                                          });
-                                        } else {
-                                          return powerTableRow;
-                                        }
-                                      }
-                                    );
+                                    const newPowerTable =
+                                      modifyElementInUseStateArray2Dimension<
+                                        number | null
+                                      >(i, j)(powerPoints.length, powerTable);
                                     const newNameVoltPacks =
                                       nameVoltPacks.map<NameVoltPack>(
                                         (n, i2) => {
@@ -360,10 +375,13 @@ export default function Home() {
                                           }
                                         }
                                       );
-                                    const newPowerPoints: PowerPoint[] = [
-                                      ...powerPoints,
-                                      { power, types, name, voltNameIndex },
-                                    ];
+                                    const newPowerPoints =
+                                      addItemInUseStateArray<PowerPoint>({
+                                        power,
+                                        types,
+                                        name,
+                                        voltNameIndex,
+                                      })(powerPoints);
                                     return {
                                       nameVoltPacks: newNameVoltPacks,
                                       powerPoints: newPowerPoints,
