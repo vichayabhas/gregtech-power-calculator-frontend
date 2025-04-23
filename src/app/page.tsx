@@ -392,6 +392,37 @@ export default function Home() {
                               }}
                             />
                           </>
+                        ) : powerTableElement != null ? (
+                          <TextField
+                            value={data.powerPoints[powerTableElement].name}
+                            onChange={setTextToString((typing) => {
+                              setData((previousData) => {
+                                const newPowerPoints =
+                                  modifyElementInUseStateArray<PowerPoint>(
+                                    powerTableElement
+                                  )(
+                                    {
+                                      power:
+                                        previousData.powerPoints[
+                                          powerTableElement
+                                        ].power,
+                                      name: typing,
+                                      voltNameIndex:
+                                        previousData.powerPoints[
+                                          powerTableElement
+                                        ].voltNameIndex,
+                                      types: "PowerPoint",
+                                    },
+                                    previousData.powerPoints
+                                  );
+                                return {
+                                  powerPoints: newPowerPoints,
+                                  powerTable: previousData.powerTable,
+                                  nameVoltPacks: previousData.nameVoltPacks,
+                                };
+                              });
+                            })}
+                          />
                         ) : null}
                       </div>
                     )}
