@@ -341,7 +341,7 @@ export type Volt = (typeof volts)[number];
 export interface NameVoltPack {
   voltIndex: number;
   name: string;
-  powerPointIndexs: number[];
+  powerPointIndexes: number[];
   source: number | null;
 }
 export interface PowerPoint {
@@ -355,7 +355,7 @@ export interface Data {
   powerPoints: PowerPoint[];
   powerTable: (number | null)[][];
 }
-export interface Location2Dimention {
+export interface Location2Dimension {
   i: number;
   j: number;
 }

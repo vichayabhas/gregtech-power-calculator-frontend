@@ -4,7 +4,7 @@ import {
   addItemInUseStateArray,
   Data,
   isFullAmp,
-  Location2Dimention,
+  Location2Dimension,
   modifyElementInUseStateArray,
   modifyElementInUseStateArray2Dimension,
   NameVoltPack,
@@ -20,8 +20,8 @@ function readPower(data: Data, sourceIndex: number) {
   let output = 0;
   const nameVoltPack = data.nameVoltPacks[sourceIndex];
   let i = 0;
-  while (i < nameVoltPack.powerPointIndexs.length) {
-    const powerPoint = data.powerPoints[nameVoltPack.powerPointIndexs[i++]];
+  while (i < nameVoltPack.powerPointIndexes.length) {
+    const powerPoint = data.powerPoints[nameVoltPack.powerPointIndexes[i++]];
     switch (powerPoint.types) {
       case "PowerPoint": {
         output = output + powerPoint.power;
@@ -43,7 +43,7 @@ export default function Home() {
   });
   const [voltIndex, setVoltIndex] = React.useState(1);
   const [name, setName] = React.useState("");
-  const [location, setLocation] = React.useState<Location2Dimention>({
+  const [location, setLocation] = React.useState<Location2Dimension>({
     i: 0,
     j: 0,
   });
@@ -83,7 +83,7 @@ export default function Home() {
             nameVoltPacks: addItemInUseStateArray<NameVoltPack>({
               voltIndex,
               name,
-              powerPointIndexs: [],
+              powerPointIndexes: [],
               source: null,
             })(nameVoltPacks),
           }));
@@ -113,7 +113,7 @@ export default function Home() {
                             {
                               name: typing,
                               voltIndex: nameVoltPack.voltIndex,
-                              powerPointIndexs: nameVoltPack.powerPointIndexs,
+                              powerPointIndexes: nameVoltPack.powerPointIndexes,
                               source: nameVoltPack.source,
                             },
                             nameVoltPacks
@@ -127,7 +127,7 @@ export default function Home() {
               </td>
               <td>{volts[nameVoltPack.voltIndex]}</td>
               <td>{readPower(data, i)}</td>
-              <td>{nameVoltPack.powerPointIndexs.length}</td>
+              <td>{nameVoltPack.powerPointIndexes.length}</td>
               <td>
                 <Checkbox
                   readOnly
@@ -356,16 +356,16 @@ export default function Home() {
                                             return {
                                               source: powerPoints.length,
                                               voltIndex: n.voltIndex,
-                                              powerPointIndexs:
-                                                n.powerPointIndexs,
+                                              powerPointIndexes:
+                                                n.powerPointIndexes,
                                               name: n.name,
                                             };
                                           } else if (i2 == voltNameIndex) {
                                             return {
                                               source: n.source,
                                               voltIndex: n.voltIndex,
-                                              powerPointIndexs: [
-                                                ...n.powerPointIndexs,
+                                              powerPointIndexes: [
+                                                ...n.powerPointIndexes,
                                                 powerPoints.length,
                                               ],
                                               name: n.name,
