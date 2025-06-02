@@ -16,7 +16,7 @@ import {
 import { Checkbox, MenuItem, Select, TextField } from "@mui/material";
 import React from "react";
 
-function readPower(data: Data, sourceIndex: number) {
+function readPower(data: Data, sourceIndex: number, isOnlyPowerPoint: boolean) {
   let output = 0;
   const nameVoltPack = data.nameVoltPacks[sourceIndex];
   let i = 0;
@@ -28,7 +28,10 @@ function readPower(data: Data, sourceIndex: number) {
         break;
       }
       case "Transformer": {
-        output = output + readPower(data, powerPoint.power);
+        if (isOnlyPowerPoint) {
+          break;
+        }
+        output = output + readPower(data, powerPoint.power, isOnlyPowerPoint);
         break;
       }
     }
@@ -96,6 +99,7 @@ export default function Home() {
           <th>power</th>
           <th>used</th>
           <th>transformValid</th>
+          <th>power only at this volt</th>
         </tr>
         {data.nameVoltPacks.map((nameVoltPack, i) => {
           return (
@@ -126,18 +130,19 @@ export default function Home() {
                 )}
               </td>
               <td>{volts[nameVoltPack.voltIndex]}</td>
-              <td>{readPower(data, i)}</td>
+              <td>{readPower(data, i, false)}</td>
               <td>{nameVoltPack.powerPointIndexes.length}</td>
               <td>
                 <Checkbox
                   readOnly
                   checked={isFullAmp(
                     true,
-                    readPower(data, i),
+                    readPower(data, i, false),
                     nameVoltPack.voltIndex
                   )}
                 />
               </td>
+              <td>{readPower(data, i, true)}</td>
             </tr>
           );
         })}
