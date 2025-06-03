@@ -343,6 +343,7 @@ export interface NameVoltPack {
   name: string;
   powerPointIndexes: number[];
   source: number | null;
+  check: boolean;
 }
 export interface PowerPoint {
   voltNameIndex: number;

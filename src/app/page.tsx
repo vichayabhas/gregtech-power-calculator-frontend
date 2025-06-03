@@ -9,6 +9,7 @@ import {
   modifyElementInUseStateArray2Dimension,
   NameVoltPack,
   PowerPoint,
+  setBoolean,
   setTextToInt,
   setTextToString,
   volts,
@@ -88,6 +89,7 @@ export default function Home() {
               name,
               powerPointIndexes: [],
               source: null,
+              check: false,
             })(nameVoltPacks),
           }));
         }}
@@ -100,6 +102,7 @@ export default function Home() {
           <th>used</th>
           <th>transformValid</th>
           <th>power only at this volt</th>
+          <th>check</th>
         </tr>
         {data.nameVoltPacks.map((nameVoltPack, i) => {
           return (
@@ -119,6 +122,7 @@ export default function Home() {
                               voltIndex: nameVoltPack.voltIndex,
                               powerPointIndexes: nameVoltPack.powerPointIndexes,
                               source: nameVoltPack.source,
+                              check: nameVoltPack.check,
                             },
                             nameVoltPacks
                           ),
@@ -143,6 +147,31 @@ export default function Home() {
                 />
               </td>
               <td>{readPower(data, i, true)}</td>
+              <td>
+                <Checkbox
+                  checked={data.nameVoltPacks[i].check}
+                  onChange={setBoolean((check) => {
+                    setData(({ nameVoltPacks, powerPoints, powerTable }) => {
+                      return {
+                        powerPoints,
+                        powerTable,
+                        nameVoltPacks:
+                          modifyElementInUseStateArray<NameVoltPack>(i)(
+                            {
+                              name: nameVoltPacks[i].name,
+                              voltIndex: nameVoltPacks[i].voltIndex,
+                              powerPointIndexes:
+                                nameVoltPacks[i].powerPointIndexes,
+                              source: nameVoltPacks[i].source,
+                              check,
+                            },
+                            nameVoltPacks
+                          ),
+                      };
+                    });
+                  })}
+                />
+              </td>
             </tr>
           );
         })}
@@ -364,6 +393,7 @@ export default function Home() {
                                               powerPointIndexes:
                                                 n.powerPointIndexes,
                                               name: n.name,
+                                              check: n.check,
                                             };
                                           } else if (i2 == voltNameIndex) {
                                             return {
@@ -374,6 +404,7 @@ export default function Home() {
                                                 powerPoints.length,
                                               ],
                                               name: n.name,
+                                              check: n.check,
                                             };
                                           } else {
                                             return n;
