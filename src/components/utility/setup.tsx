@@ -350,6 +350,7 @@ export interface PowerPoint {
   power: number;
   types: "PowerPoint" | "Transformer";
   name: string;
+  isIncludeTemporary: boolean;
 }
 export interface Data {
   nameVoltPacks: NameVoltPack[];

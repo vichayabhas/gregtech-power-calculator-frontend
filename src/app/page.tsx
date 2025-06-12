@@ -57,6 +57,7 @@ export default function Home() {
     "PowerPoint"
   );
   const [editIndex, setEditIndex] = React.useState(0);
+  let temporaryPower = 0;
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <Select
@@ -177,7 +178,7 @@ export default function Home() {
         })}
       </table>
       <FinishButton
-        text="add calum"
+        text="add column"
         onClick={() => {
           setData(({ powerPoints, powerTable, nameVoltPacks }) => ({
             powerPoints,
@@ -205,6 +206,13 @@ export default function Home() {
           return (
             <tr key={i}>
               {powerTableRow.map((powerTableElement, j) => {
+                if (
+                  powerTableElement &&
+                  data.powerPoints[powerTableElement].isIncludeTemporary
+                ) {
+                  temporaryPower =
+                    temporaryPower + data.powerPoints[powerTableElement].power;
+                }
                 return (
                   <td key={j}>
                     {powerTableElement != null
@@ -265,6 +273,9 @@ export default function Home() {
                                     previousData.powerPoints[powerTableElement]
                                       .voltNameIndex,
                                   types: "PowerPoint",
+                                  isIncludeTemporary:
+                                    previousData.powerPoints[powerTableElement]
+                                      .isIncludeTemporary,
                                 },
                                 previousData.powerPoints
                               );
@@ -276,6 +287,43 @@ export default function Home() {
                           });
                         })}
                         type="number"
+                      />
+                    ) : null}
+                    {powerTableElement != null &&
+                    data.powerPoints[powerTableElement].types !=
+                      "Transformer" ? (
+                      <Checkbox
+                        checked={
+                          data.powerPoints[powerTableElement].isIncludeTemporary
+                        }
+                        onChange={setBoolean((check) => {
+                          setData((previousData) => {
+                            const newPowerPoints =
+                              modifyElementInUseStateArray<PowerPoint>(
+                                powerTableElement
+                              )(
+                                {
+                                  power:
+                                    previousData.powerPoints[powerTableElement]
+                                      .power,
+                                  name: previousData.powerPoints[
+                                    powerTableElement
+                                  ].name,
+                                  voltNameIndex:
+                                    previousData.powerPoints[powerTableElement]
+                                      .voltNameIndex,
+                                  types: "PowerPoint",
+                                  isIncludeTemporary: check,
+                                },
+                                previousData.powerPoints
+                              );
+                            return {
+                              powerPoints: newPowerPoints,
+                              powerTable: previousData.powerTable,
+                              nameVoltPacks: previousData.nameVoltPacks,
+                            };
+                          });
+                        })}
                       />
                     ) : null}
                     {location.i != i || location.j != j ? (
@@ -417,6 +465,7 @@ export default function Home() {
                                         types,
                                         name,
                                         voltNameIndex,
+                                        isIncludeTemporary: false,
                                       })(powerPoints);
                                     return {
                                       nameVoltPacks: newNameVoltPacks,
@@ -448,6 +497,10 @@ export default function Home() {
                                           powerTableElement
                                         ].voltNameIndex,
                                       types: "PowerPoint",
+                                      isIncludeTemporary:
+                                        previousData.powerPoints[
+                                          powerTableElement
+                                        ].isIncludeTemporary,
                                     },
                                     previousData.powerPoints
                                   );
@@ -469,6 +522,7 @@ export default function Home() {
           );
         })}
       </table>
+      <div>temporary power={temporaryPower}</div>
       <TextField
         value={JSON.stringify(data)}
         onChange={setTextToString((input) => {
