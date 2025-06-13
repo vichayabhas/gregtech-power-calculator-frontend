@@ -356,6 +356,7 @@ export interface Data {
   nameVoltPacks: NameVoltPack[];
   powerPoints: PowerPoint[];
   powerTable: (number | null)[][];
+  note: string;
 }
 export interface Location2Dimension {
   i: number;

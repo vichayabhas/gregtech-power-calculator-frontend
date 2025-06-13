@@ -44,6 +44,7 @@ export default function Home() {
     nameVoltPacks: [],
     powerPoints: [],
     powerTable: [[null]],
+    note: "",
   });
   const [voltIndex, setVoltIndex] = React.useState(1);
   const [name, setName] = React.useState("");
@@ -57,6 +58,7 @@ export default function Home() {
     "PowerPoint"
   );
   const [editIndex, setEditIndex] = React.useState(0);
+  const [fullTemporaryPower, setFullTemporaryPower] = React.useState(0);
   let temporaryPower = 0;
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
@@ -82,7 +84,7 @@ export default function Home() {
       <FinishButton
         text="add volt"
         onClick={() => {
-          setData(({ powerPoints, powerTable, nameVoltPacks }) => ({
+          setData(({ powerPoints, powerTable, nameVoltPacks, note }) => ({
             powerPoints,
             powerTable,
             nameVoltPacks: addItemInUseStateArray<NameVoltPack>({
@@ -92,6 +94,7 @@ export default function Home() {
               source: null,
               check: false,
             })(nameVoltPacks),
+            note,
           }));
         }}
       />
@@ -113,21 +116,25 @@ export default function Home() {
                   <TextField
                     value={nameVoltPack.name}
                     onChange={setTextToString((typing) => {
-                      setData(({ powerPoints, powerTable, nameVoltPacks }) => ({
-                        powerPoints,
-                        powerTable,
-                        nameVoltPacks:
-                          modifyElementInUseStateArray<NameVoltPack>(i)(
-                            {
-                              name: typing,
-                              voltIndex: nameVoltPack.voltIndex,
-                              powerPointIndexes: nameVoltPack.powerPointIndexes,
-                              source: nameVoltPack.source,
-                              check: nameVoltPack.check,
-                            },
-                            nameVoltPacks
-                          ),
-                      }));
+                      setData(
+                        ({ powerPoints, powerTable, nameVoltPacks, note }) => ({
+                          powerPoints,
+                          powerTable,
+                          nameVoltPacks:
+                            modifyElementInUseStateArray<NameVoltPack>(i)(
+                              {
+                                name: typing,
+                                voltIndex: nameVoltPack.voltIndex,
+                                powerPointIndexes:
+                                  nameVoltPack.powerPointIndexes,
+                                source: nameVoltPack.source,
+                                check: nameVoltPack.check,
+                              },
+                              nameVoltPacks
+                            ),
+                          note,
+                        })
+                      );
                     })}
                   />
                 ) : (
@@ -152,24 +159,27 @@ export default function Home() {
                 <Checkbox
                   checked={data.nameVoltPacks[i].check}
                   onChange={setBoolean((check) => {
-                    setData(({ nameVoltPacks, powerPoints, powerTable }) => {
-                      return {
-                        powerPoints,
-                        powerTable,
-                        nameVoltPacks:
-                          modifyElementInUseStateArray<NameVoltPack>(i)(
-                            {
-                              name: nameVoltPacks[i].name,
-                              voltIndex: nameVoltPacks[i].voltIndex,
-                              powerPointIndexes:
-                                nameVoltPacks[i].powerPointIndexes,
-                              source: nameVoltPacks[i].source,
-                              check,
-                            },
-                            nameVoltPacks
-                          ),
-                      };
-                    });
+                    setData(
+                      ({ nameVoltPacks, powerPoints, powerTable, note }) => {
+                        return {
+                          powerPoints,
+                          powerTable,
+                          nameVoltPacks:
+                            modifyElementInUseStateArray<NameVoltPack>(i)(
+                              {
+                                name: nameVoltPacks[i].name,
+                                voltIndex: nameVoltPacks[i].voltIndex,
+                                powerPointIndexes:
+                                  nameVoltPacks[i].powerPointIndexes,
+                                source: nameVoltPacks[i].source,
+                                check,
+                              },
+                              nameVoltPacks
+                            ),
+                          note,
+                        };
+                      }
+                    );
                   })}
                 />
               </td>
@@ -180,24 +190,26 @@ export default function Home() {
       <FinishButton
         text="add column"
         onClick={() => {
-          setData(({ powerPoints, powerTable, nameVoltPacks }) => ({
+          setData(({ powerPoints, powerTable, nameVoltPacks, note }) => ({
             powerPoints,
             nameVoltPacks,
             powerTable: powerTable.map(
               addItemInUseStateArray<number | null>(null)
             ),
+            note,
           }));
         }}
       />
       <FinishButton
         text="add row"
         onClick={() => {
-          setData(({ powerPoints, powerTable, nameVoltPacks }) => ({
+          setData(({ powerPoints, powerTable, nameVoltPacks, note }) => ({
             powerPoints,
             nameVoltPacks,
             powerTable: addItemInUseStateArray<(number | null)[]>(
               powerTable[0].map(() => null)
             )(powerTable),
+            note,
           }));
         }}
       />
@@ -207,7 +219,7 @@ export default function Home() {
             <tr key={i}>
               {powerTableRow.map((powerTableElement, j) => {
                 if (
-                  powerTableElement &&
+                  powerTableElement != null &&
                   data.powerPoints[powerTableElement].isIncludeTemporary
                 ) {
                   temporaryPower =
@@ -283,6 +295,7 @@ export default function Home() {
                               powerPoints: newPowerPoints,
                               powerTable: previousData.powerTable,
                               nameVoltPacks: previousData.nameVoltPacks,
+                              note: previousData.note,
                             };
                           });
                         })}
@@ -321,6 +334,7 @@ export default function Home() {
                               powerPoints: newPowerPoints,
                               powerTable: previousData.powerTable,
                               nameVoltPacks: previousData.nameVoltPacks,
+                              note: previousData.note,
                             };
                           });
                         })}
@@ -422,6 +436,7 @@ export default function Home() {
                                     powerPoints,
                                     powerTable,
                                     nameVoltPacks,
+                                    note,
                                   }) => {
                                     const newPowerTable =
                                       modifyElementInUseStateArray2Dimension<
@@ -471,6 +486,7 @@ export default function Home() {
                                       nameVoltPacks: newNameVoltPacks,
                                       powerPoints: newPowerPoints,
                                       powerTable: newPowerTable,
+                                      note,
                                     };
                                   }
                                 );
@@ -508,6 +524,7 @@ export default function Home() {
                                   powerPoints: newPowerPoints,
                                   powerTable: previousData.powerTable,
                                   nameVoltPacks: previousData.nameVoltPacks,
+                                  note: previousData.note,
                                 };
                               });
                             })}
@@ -523,6 +540,28 @@ export default function Home() {
         })}
       </table>
       <div>temporary power={temporaryPower}</div>
+      <div>
+        <label>full temporary power</label>
+        <TextField
+          value={fullTemporaryPower.toString()}
+          onChange={setTextToInt(setFullTemporaryPower)}
+        />
+      </div>
+      <div>remain temporary power={fullTemporaryPower - temporaryPower}</div>
+      <div>
+        <label>note</label>
+        <TextField
+          value={data.note}
+          onChange={setTextToString((note) => {
+            setData(({ powerPoints, powerTable, nameVoltPacks }) => ({
+              nameVoltPacks,
+              note,
+              powerPoints,
+              powerTable,
+            }));
+          }, true)}
+        />
+      </div>
       <TextField
         value={JSON.stringify(data)}
         onChange={setTextToString((input) => {
