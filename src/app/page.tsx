@@ -59,6 +59,8 @@ export default function Home() {
   );
   const [editIndex, setEditIndex] = React.useState(0);
   const [fullTemporaryPower, setFullTemporaryPower] = React.useState(0);
+  const [a, setA] = React.useState(0);
+  const [b, setB] = React.useState(0);
   let temporaryPower = 0;
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
@@ -548,6 +550,28 @@ export default function Home() {
         />
       </div>
       <div>remain temporary power={fullTemporaryPower - temporaryPower}</div>
+      <table>
+        <tr>
+          <th>A</th>
+          <th>B</th>
+          <th>+</th>
+          <th>-</th>
+          <th>*</th>
+          <th>/</th>
+        </tr>
+        <tr>
+          <td>
+            <TextField onChange={setTextToInt(setA)} value={a.toString()} />
+          </td>
+          <td>
+            <TextField onChange={setTextToInt(setB)} value={b.toString()} />
+          </td>
+          <td>{a + b}</td>
+          <td>{a - b}</td>
+          <td>{a * b}</td>
+          <td>{a / b}</td>
+        </tr>
+      </table>
       <div>
         <label>note</label>
         <TextField
